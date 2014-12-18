@@ -1,5 +1,6 @@
 /* Oh no you didn't! 
  * Automatic reload of crashed tabs
+ * https://github.com/unclespode/ohnoyoudidnt/tree/master
  */
 
 var calledTabs = [];
@@ -7,6 +8,7 @@ var callsOut = 0;
 var callsIn = 0;
 var callsComplete = {};
 var tabSuccessCount = {};
+var tabFailCount = {};
 
 //Fetch all tabs 
 function checkTabs(callback) {
@@ -28,9 +30,16 @@ function checkActive(tabs) {
 
             //don't restart if it hasn't had at least ONE successful callback
             if (!callsComplete[thisCall.id] && thisCall.status == "complete" && tabSuccessCount[thisCall.id] > 0) {
-                console.log("Restarting", thisCall.id, thisCall.status, thisCall.title);
-                tabSuccessCount[thisCall.id] = 0;
-                chrome.tabs.reload(thisCall.id); //reload it
+                tabFailCount[thisCall.id] = tabFailCount[thisCall.id] || 0;
+                tabFailCount[thisCall.id]++;
+
+                console.log("Fail number " + tabFailCount[thisCall.id], thisCall.title);
+                //Needs to have failed 10 times in a row
+                if (tabFailCount[thisCall.id] > 10) {
+                    console.log("Reloading: ", thisCall.title);
+                    tabSuccessCount[thisCall.id] = 0;
+                    chrome.tabs.reload(thisCall.id); //reload it
+                 }
             }
         }
     }
@@ -63,6 +72,7 @@ function checkActive(tabs) {
 
                     tabSuccessCount[thisTab.id] = tabSuccessCount[thisTab.id] || 0;
                     tabSuccessCount[thisTab.id]++;
+                    tabFailCount[thisTab.id] = 0; //reset fails count
                 });
             }
         }).call();
@@ -79,3 +89,9 @@ setInterval(function() {
             checkActive(tabs);
         });
 }, 1000);
+
+//If the tab reloads, reset stats
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    tabSuccessCount[tabId] = 0;
+    tabFailCount[tabId] = 0;
+});
