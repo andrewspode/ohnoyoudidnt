@@ -1,4 +1,6 @@
 Oh no you didn't!
 =================
 
-Chrome is a fickle beast and will occasionally crash out with no real, debuggable reason - leaving us with an 'Aw, Snap!' message. Our response to that is 'Oh no you didn't!' and refresh the page automatically. This is incredibly useful when running web apps in kiosk mode, where there is no easy way to reload the page.
+Chrome has a habit of crashing, often for no real reason. When running a Kiosk, or Digital Signage - the ability the quickly reload the page is essential. This plugin does exactly that.
+
+This is not a replacement for correcting problems in the first place (memory leaks especially) and isn't particularly useful in an everyday environment, where you can simply press the refresh button yourself.

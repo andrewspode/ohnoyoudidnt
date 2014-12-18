@@ -2,7 +2,7 @@
     "name": "Oh No You Didn't!",
     "version": "1.0.0",
     "manifest_version": 2,
-    "description": "Chrome is a fickle beast and will occasionally crash out with no real, debuggable reason - leaving us with an 'Aw, Snap!' message. Our response to that is 'Oh no you didn't!' and refresh the page automatically. This is incredibly useful when running web apps in kiosk mode, where there is no easy way to reload the page.",
+    "description": "Automatically reload tabs that have crashed (Aw Snap! He's Dead Jim etc.). Handy for Kiosk mode where access is limited.",
     "homepage_url": "http://github.com/unclespode/ohnoyoudidnt",
     "icons": {
         "16": "icons/icon16.png",
