@@ -10,14 +10,6 @@ var callsComplete = {};
 var tabSuccessCount = {};
 var tabFailCount = {};
 
-//Fetch all tabs 
-function checkTabs(callback) {
-    chrome.tabs.query({},
-        function(tabs) {
-            if (callback) callback.call(tabs);
-        });
-}
-
 function checkActive(tabs) {
 
     /*Before Checking Again, Did it work last time? */
@@ -34,8 +26,9 @@ function checkActive(tabs) {
                 tabFailCount[thisCall.id]++;
 
                 console.log("Fail number " + tabFailCount[thisCall.id], thisCall.title);
+                
                 //Needs to have failed 10 times in a row
-                if (tabFailCount[thisCall.id] > 10) {
+                if (tabFailCount[thisCall.id] >= 10) {
                     console.log("Reloading: ", thisCall.title);
                     tabSuccessCount[thisCall.id] = 0;
                     chrome.tabs.reload(thisCall.id); //reload it
