@@ -1,6 +1,6 @@
 {
     "name": "Oh No You Didn't!",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "manifest_version": 2,
     "description": "Automatically reload tabs that have crashed (Aw Snap! He's Dead Jim etc.). Handy for Kiosk mode where access is limited.",
     "homepage_url": "http://github.com/unclespode/ohnoyoudidnt",

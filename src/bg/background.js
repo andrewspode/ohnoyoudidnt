@@ -3,69 +3,48 @@
  * https://github.com/unclespode/ohnoyoudidnt/tree/master
  */
 
-var calledTabs = [];
-var callsOut = 0;
-var callsIn = 0;
-var callsComplete = {};
+ /*
+Copy this into a javascript console in a tab to crash it.
+var memoryEater = "nom"; while(true) {memoryEater = memoryEater += "nom";}
+*/
+
+//Track how many times our no-op was a success
 var tabSuccessCount = {};
-var tabFailCount = {};
 
 function checkActive(tabs) {
 
-    /*Before Checking Again, Did it work last time? */
-
-    if (callsOut !== callsIn) {
-        var callsLength = calledTabs.length;
-
-        while (callsLength--) {
-            var thisCall = calledTabs[callsLength];
-
-            //don't restart if it hasn't had at least ONE successful callback
-            if (!callsComplete[thisCall.id] && thisCall.status == "complete" && tabSuccessCount[thisCall.id] > 0) {
-                tabFailCount[thisCall.id] = tabFailCount[thisCall.id] || 0;
-                tabFailCount[thisCall.id]++;
-
-                console.log("Fail number " + tabFailCount[thisCall.id], thisCall.title);
-                
-                //Needs to have failed 10 times in a row
-                if (tabFailCount[thisCall.id] >= 10) {
-                    console.log("Reloading: ", thisCall.title);
-                    tabSuccessCount[thisCall.id] = 0;
-                    chrome.tabs.reload(thisCall.id); //reload it
-                 }
-            }
-        }
-    }
-
-    /*Reset our metrics*/
-    callsOut = 0;
-    callsIn = 0;
-    callsComplete = {};
-    calledTabs = [];
-
     var tabsLength = tabs.length;
+
     while (tabsLength--) {
         /*It's in a function to create a closure*/
         (function() {
             var thisTab = tabs[tabsLength];
 
             //Only check tabs that have finished loading and are http / https
+            //This basically lets it ignore tabs like chrome://
             if (thisTab.url.substring(0, 4) == "http" && thisTab.status == "complete") {
 
-                callsOut++;
-                calledTabs.push(thisTab);
-
-                //Perform a NOOP and hopefully get a callback
+                //Perform a no-op
                 chrome.tabs.executeScript(thisTab.id, {
-                    code: "null;",
-                    /*runAt: "document_start"*/
-                }, function() {
-                    callsIn++;
-                    callsComplete[thisTab.id] = true;
+                    code: "null;"
+                }, function(result) {
+                    //We will get a callback no matter what (unlike when I first released this)
 
-                    tabSuccessCount[thisTab.id] = tabSuccessCount[thisTab.id] || 0;
-                    tabSuccessCount[thisTab.id]++;
-                    tabFailCount[thisTab.id] = 0; //reset fails count
+                    //If it reports it's closed, then it's crashed, because a genuine close fires an event. A crashed tab does not.
+                    if (chrome.runtime.lastError && chrome.runtime.lastError.message == "The tab was closed.") {
+                        console.log("Crashed: ", thisTab.title, thisTab.id);
+                        
+                        //Only reload it if at least one sucessful no-op has occurred. 
+                        //I'm not sure if this is needed anymore, but it's not a bad check to do
+                        if (tabSuccessCount[thisTab.id] > 0) {
+                            console.log("Reloading: ", thisTab.title, thisTab.id);
+                            chrome.tabs.reload(thisTab.id); //reload it
+                        }
+                    } else {
+                        //Sucessfully ran our no-op, so add it up
+                        tabSuccessCount[thisTab.id] = tabSuccessCount[thisTab.id] || 0;
+                        tabSuccessCount[thisTab.id]++;
+                    }
                 });
             }
         }).call();
@@ -73,18 +52,16 @@ function checkActive(tabs) {
 }
 
 /*Check once a second to make sure tabs are still responding*/
-
 setInterval(function() {
-    /*Get all the tabs and check them*/
-
-    chrome.tabs.query({},
-        function(tabs) {
-            checkActive(tabs);
-        });
+    chrome.tabs.query({}, checkActive);
 }, 1000);
 
 //If the tab reloads, reset stats
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(tabChanged);
+chrome.tabs.onRemoved.addListener(tabChanged);
+
+//If a tab is genuinely closed, or refreshed - then reset the number of sucesses
+function tabChanged(tabId, changeInfo, tab) {
+    console.log("Resetting Stats: ", tabId);
     tabSuccessCount[tabId] = 0;
-    tabFailCount[tabId] = 0;
-});
+}
