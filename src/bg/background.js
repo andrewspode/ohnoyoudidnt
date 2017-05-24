@@ -22,7 +22,7 @@ function checkActive(tabs) {
 
             //Only check tabs that have finished loading and are http / https
             //This basically lets it ignore tabs like chrome://
-            if (thisTab.url.substring(0, 4) == "http" && thisTab.status == "complete") {
+            if (( thisTab.url.substring(0, 4) == "http" || thisTab.url.substring(0, 4) == "file" ) && thisTab.status == "complete") {
 
                 //Perform a no-op
                 chrome.tabs.executeScript(thisTab.id, {
