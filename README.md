@@ -7,10 +7,11 @@ This is not a replacement for correcting problems in the first place (memory lea
 ## Installation
 
 1. Download and unzip package onto disk
-2. Open Chrome extensions page ([`chrome://extensions`](chrome://extensions))
-3. Enable developer mode
-4. Select "Load unpacked", select the base folder ("ohnoyoudidnt"), and click 'ok'
-5. Simulate a failure!
+2. **Optional:** Run `$ yarn install` for improved editor support
+3. Open Chrome extensions page ([`chrome://extensions`](chrome://extensions))
+4. Enable developer mode
+5. Select "Load unpacked", select the base folder ("ohnoyoudidnt"), and click 'ok'
+6. Simulate a failure!
 
 ## How to test?
 
