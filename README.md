@@ -24,4 +24,4 @@ while (true) {
 }
 ```
 
-OR visit the following URL `chrome://crash`
+OR visit the following URL [`chrome://crash`](chrome://crash)
