@@ -4,6 +4,8 @@
  * Fork of: https://github.com/unclespode/ohnoyoudidnt/tree/master
  */
 
+const errorMessages = ["The frame was removed.", "The tab was closed."];
+
 function reloadCrashedTabs(tabs) {
   for (const tab of tabs) {
     if (tab.status !== "unloaded") {
@@ -14,9 +16,11 @@ function reloadCrashedTabs(tabs) {
       if (
         result === undefined &&
         typeof chrome.runtime.lastError === "object" &&
-        chrome.runtime.lastError.message === "The frame was removed."
+        errorMessages.includes(chrome.runtime.lastError.message)
       ) {
-        console.info("Reloading crashed tab", tab.id, tab.title);
+        console.info(
+          `Reloading crashed tab (ID: ${tab.id}, Title: "${tab.title}")`
+        );
 
         chrome.tabs.reload(tab.id);
       }
@@ -24,6 +28,7 @@ function reloadCrashedTabs(tabs) {
   }
 }
 
-setInterval(function () {
+setInterval(() => {
+  console.log("Checking tabs...");
   chrome.tabs.query({}, reloadCrashedTabs);
 }, 1000);
