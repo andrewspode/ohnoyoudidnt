@@ -1,0 +1,5 @@
+# Dependencies
+node_modules
+
+# Platform specific files
+.DS_Store

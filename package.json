@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "ohnoyoudidnt",
+  "version": "1.0.0",
+  "repository": "https://github.com/andrewspode/ohnoyoudidnt.git",
+  "author": "Patrick Hollweck <patrick-hollweck@gmx.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.162"
+  }
+}
