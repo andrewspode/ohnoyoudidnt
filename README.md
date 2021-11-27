@@ -4,7 +4,7 @@ Chrome has a habit of crashing, often for no real reason. When running a Kiosk, 
 
 This is not a replacement for correcting problems in the first place (memory leaks especially) and isn't particularly useful in an everyday environment, where you can simply press the refresh button yourself.
 
-## Installation
+## Installation (Manual)
 
 1. Download and unzip package onto disk
 2. **Optional:** Run `$ yarn install` for improved editor support
@@ -12,6 +12,10 @@ This is not a replacement for correcting problems in the first place (memory lea
 4. Enable developer mode
 5. Select "Load unpacked", select the base folder ("ohnoyoudidnt"), and click 'ok'
 6. Simulate a failure!
+
+## Installation (Packaged)
+
+Install the package from the [Chrome Store](https://chrome.google.com/webstore/detail/oh-no-you-didnt/acdablfhjbhkjbcifldncdkmlophfgda?hl=en).
 
 ## How to test?
 

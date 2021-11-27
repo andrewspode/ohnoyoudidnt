@@ -1,7 +1,6 @@
 /*
  * Oh no you didn't!
  * Automatically reload crashed ("aw, snap") tabs
- * Fork of: https://github.com/unclespode/ohnoyoudidnt/tree/master
  */
 
 const errorMessages = ["The frame was removed.", "The tab was closed."];
